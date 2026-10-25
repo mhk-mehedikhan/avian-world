@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore AVIAN WORLD, a growing global encyclopedia of birds, habitats, and conservation.">
+  <title>AVIAN WORLD — Global Bird Encyclopedia</title>
+  <style>
+    :root {
+      --forest: #153f35;
+      --forest-dark: #0b2b25;
+      --leaf: #dce9d5;
+      --cream: #f7f6ef;
+      --paper: #fffefa;
+      --gold: #d5a84f;
+      --ink: #182b26;
+      --muted: #66756e;
+      --line: #e1e6dd;
+      --radius: 20px;
+      --shadow: 0 12px 35px rgba(16, 48, 39, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--cream); color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .container { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { background: var(--forest-dark); color: #eaf1e9; font-size: .82rem; padding: 8px 0; }
+    .topbar-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    header { background: rgba(255,254,250,.96); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); }
+    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; letter-spacing: .08em; color: var(--forest); }
+    .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; background: var(--forest); color: white; font-size: 1.35rem; }
+    .brand small { display: block; font-size: .63rem; letter-spacing: .18em; font-weight: 650; color: var(--muted); margin-top: -4px; }
+    .nav-links { display: flex; align-items: center; gap: 27px; color: #43564d; font-size: .92rem; font-weight: 650; }
+    .nav-links a:hover { color: #b17b21; }
+    .nav-cta { background: var(--forest); color: white !important; padding: 11px 17px; border-radius: 999px; }
+    .hero { background: var(--forest); color: white; overflow: hidden; position: relative; }
+    .hero::after { content: ""; position: absolute; width: 540px; height: 540px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; right: -140px; top: -200px; box-shadow: 0 0 0 60px rgba(255,255,255,.025), 0 0 0 120px rgba(255,255,255,.025); pointer-events: none; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 45px; align-items: center; padding: 76px 0 82px; position: relative; z-index: 1; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: #f0cf86; text-transform: uppercase; letter-spacing: .17em; font-size: .75rem; font-weight: 800; }
+    h1 { font-size: clamp(2.65rem, 5vw, 4.8rem); line-height: 1.03; letter-spacing: -.055em; margin: 18px 0 22px; max-width: 650px; }
+    h1 em { color: #d9e8c9; font-style: normal; }
+    .hero-copy { color: #d4e1d8; font-size: 1.08rem; max-width: 540px; margin: 0 0 28px; }
+    .search-box { display: flex; background: white; padding: 7px; border-radius: 14px; max-width: 560px; box-shadow: 0 12px 30px rgba(0,0,0,.15); }
+    .search-box input { min-width: 0; flex: 1; border: 0; outline: 0; padding: 13px 14px; color: var(--ink); background: transparent; }
+    .primary-btn { border: 0; border-radius: 10px; background: var(--gold); color: #1c3027; font-weight: 800; padding: 12px 19px; }
+    .primary-btn:hover { filter: brightness(1.05); }
+    .hero-note { font-size: .82rem; color: #b9cec2; margin-top: 13px; }
+    .hero-art { min-height: 370px; position: relative; display: grid; place-items: center; }
+    .hero-orb { width: min(100%, 410px); aspect-ratio: 1; border-radius: 50%; background: linear-gradient(145deg, #d8e6ca, #91b09a); display: grid; place-items: center; box-shadow: inset -18px -25px 60px rgba(21,63,53,.15), 0 25px 60px rgba(0,0,0,.18); }
+    .hero-bird { font-size: clamp(8rem, 19vw, 14rem); filter: drop-shadow(0 22px 14px rgba(21,63,53,.2)); transform: rotate(-8deg); }
+    .floating-card { position: absolute; bottom: 14px; left: 0; background: var(--paper); color: var(--ink); padding: 14px 17px; border-radius: 15px; box-shadow: var(--shadow); }
+    .floating-card strong { display: block; font-size: .92rem; }
+    .floating-card span { color: var(--muted); font-size: .78rem; }
+    .floating-tag { position: absolute; top: 26px; right: 0; background: #fffefa; color: var(--forest); border-radius: 999px; padding: 9px 14px; font-size: .8rem; font-weight: 800; box-shadow: var(--shadow); }
+    .stats { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); padding: 25px 0; gap: 20px; }
+    .stat { text-align: center; border-right: 1px solid var(--line); }
+    .stat:last-child { border: 0; }
+    .stat strong { display: block; color: var(--forest); font-size: 1.35rem; }
+    .stat span { color: var(--muted); font-size: .82rem; }
+    section { padding: 76px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 22px; margin-bottom: 27px; }
+    .section-kicker { text-transform: uppercase; color: #9a7027; font-size: .73rem; font-weight: 850; letter-spacing: .16em; }
+    h2 { margin: 7px 0 0; font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.15; letter-spacing: -.04em; color: var(--forest); }
+    .section-desc { color: var(--muted); max-width: 500px; margin: 9px 0 0; }
+    .text-link { color: var(--forest); font-weight: 800; white-space: nowrap; }
+    .filters { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter-btn { border: 1px solid #d7dfd4; color: #4d6258; background: transparent; border-radius: 999px; padding: 9px 15px; font-size: .85rem; font-weight: 750; }
+    .filter-btn.active, .filter-btn:hover { background: var(--forest); color: white; border-color: var(--forest); }
+    .bird-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+    .bird-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 18px rgba(16,48,39,.035); transition: transform .2s, box-shadow .2s; }
+    .bird-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .bird-visual { height: 190px; display: grid; place-items: center; position: relative; overflow: hidden; background: linear-gradient(145deg,#e5ead9,#c0d5bd); }
+    .bird-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  inset: 0;
+}
+    .bird-visual::before, .bird-visual::after { content: ""; position: absolute; border: 1px solid rgba(21,63,53,.13); border-radius: 50%; width: 180px; height: 180px; }
+    .bird-visual::after { width: 240px; height: 240px; }
+    .bird-emoji { font-size: 6.2rem; z-index: 1; filter: drop-shadow(0 10px 6px rgba(21,63,53,.12)); }
+    .status { position: absolute; z-index: 2; top: 13px; left: 13px; border-radius: 999px; background: rgba(255,254,250,.93); color: var(--forest); padding: 6px 10px; font-size: .7rem; font-weight: 850; }
+    .status.critical { color: #9c3027; }
+    .bird-info { padding: 20px; }
+    .bird-info h3 { margin: 0; color: var(--forest); font-size: 1.15rem; }
+    .scientific { color: #7b8981; font-style: italic; font-size: .85rem; margin-top: 2px; }
+    .bird-info p { color: var(--muted); font-size: .9rem; margin: 12px 0 17px; min-height: 46px; }
+    .bird-meta { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 13px; font-size: .78rem; color: #61746a; }
+    .bird-meta span:first-child { font-weight: 750; color: var(--forest); }
+    .empty-state { display: none; text-align: center; color: var(--muted); padding: 35px; border: 1px dashed #cbd7ca; border-radius: var(--radius); grid-column: 1/-1; }
+    .rare-band { background: #e8eee2; }
+    .rare-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 42px; align-items: center; }
+    .rare-illustration { min-height: 300px; border-radius: 28px; background: linear-gradient(145deg,#d0dfc7,#a7c2ab); display: grid; place-items: center; position: relative; overflow: hidden; }
+    .rare-illustration::before { content: ""; position: absolute; width: 260px; height: 260px; border: 1px solid rgba(21,63,53,.2); border-radius: 50%; box-shadow: 0 0 0 40px rgba(21,63,53,.04),0 0 0 80px rgba(21,63,53,.04); }
+    .rare-illustration span { font-size: 9rem; z-index: 1; filter: drop-shadow(0 15px 10px rgba(21,63,53,.15)); }
+    .rare-list { display: grid; gap: 12px; margin-top: 23px; }
+    .rare-item { display: flex; align-items: center; gap: 14px; background: rgba(255,254,250,.75); border: 1px solid #dce5d7; padding: 13px 15px; border-radius: 14px; }
+    .rare-icon { width: 45px; height: 45px; display: grid; place-items: center; background: #e2ebdc; border-radius: 12px; font-size: 1.55rem; flex-shrink: 0; }
+    .rare-item strong { display: block; color: var(--forest); font-size: .91rem; }
+    .rare-item small { color: var(--muted); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .about-card { padding: 27px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--paper); }
+    .about-icon { width: 48px; height: 48px; display: grid; place-items: center; background: var(--leaf); border-radius: 14px; font-size: 1.5rem; }
+    .about-card h3 { margin: 15px 0 8px; color: var(--forest); }
+    .about-card p { color: var(--muted); margin: 0; font-size: .92rem; }
+    .notice { background: #fff7e5; border: 1px solid #f0dfb8; border-radius: 14px; padding: 15px 17px; color: #73551d; font-size: .84rem; margin-top: 24px; }
+    footer { background: var(--forest-dark); color: #d8e5dc; padding: 40px 0 25px; }
+    .footer-top { display: flex; justify-content: space-between; gap: 25px; align-items: start; flex-wrap: wrap; }
+    footer .brand { color: white; }
+    footer .brand small { color: #a8c0b2; }
+    footer p { max-width: 440px; color: #b5c9bd; font-size: .88rem; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: .86rem; }
+    .copyright { border-top: 1px solid rgba(255,255,255,.14); margin-top: 28px; padding-top: 18px; font-size: .78rem; color: #9db6a7; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(5,24,19,.68); z-index: 50; padding: 20px; place-items: center; }
+    .modal.open { display: grid; }
+    .modal-panel { width: min(620px,100%); max-height: 90vh; overflow: auto; background: var(--paper); border-radius: 22px; padding: 28px; position: relative; }
+    .modal-close { position: absolute; right: 15px; top: 15px; border: 0; border-radius: 50%; width: 38px; height: 38px; background: #edf1e8; font-size: 1.2rem; }
+    .modal-image {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: #e5ead9;
+}
+    .modal-panel h2 { margin-top: 18px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+    .detail { padding: 13px; background: #f0f3ec; border-radius: 12px; }
+    .detail small { display: block; color: var(--muted); }
+    .detail strong { color: var(--forest); font-size: .9rem; }
+    .source-note { color: var(--muted); font-size: .8rem; margin-top: 18px; }
+    @media (max-width: 850px) {
+      .nav-links { gap: 15px; }
+      .hero-grid { grid-template-columns: 1fr; padding: 58px 0 65px; }
+      .hero-art { min-height: 300px; }
+      .hero-orb { max-width: 300px; }
+      .bird-grid { grid-template-columns: repeat(2,1fr); }
+      .rare-layout { grid-template-columns: 1fr; }
+      .rare-illustration { min-height: 230px; }
+    }
+    @media (max-width: 600px) {
+      .container { width: min(100% - 28px, 1160px); }
+      .nav { min-height: 66px; }
+      .nav-links { gap: 12px; font-size: .8rem; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .brand { font-size: .9rem; }
+      .brand-mark { width: 38px; height: 38px; }
+      .hero-grid { gap: 20px; }
+      h1 { font-size: 2.8rem; }
+      .hero-art { min-height: 250px; }
+      .hero-orb { max-width: 240px; }
+      .floating-card { left: 0; bottom: 0; }
+      .floating-tag { top: 0; right: 0; }
+      .stats-grid { gap: 8px; }
+      .stat strong { font-size: 1.05rem; }
+      .stat span { font-size: .72rem; }
+      section { padding: 55px 0; }
+      .section-head { display: block; }
+      .section-head .text-link { display: inline-block; margin-top: 14px; }
+      .bird-grid { grid-template-columns: 1fr; }
+      .bird-visual { height: 180px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .search-box { flex-wrap: wrap; }
+      .search-box input { flex-basis: 100%; }
+      .search-box .primary-btn { width: 100%; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <span>A growing guide to the world's birds</span>
+      <span>Learn • Explore • Protect</span>
+    </div>
+  </div>
+
+  <header>
+    <nav class="container nav" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="AVIAN WORLD home">
+        <span class="brand-mark">✦</span>
+        <span>AVIAN WORLD<small>GLOBAL BIRD ENCYCLOPEDIA</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#explore">Explore birds</a>
+        <a href="#rare">Rare species</a>
+        <a href="#about">About</a>
+        <a class="nav-cta" href="#explore">Discover birds ↗</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">✦ A world full of wings</div>
+          <h1>Discover the <em>wonder</em> of every bird.</h1>
+          <p class="hero-copy">Explore remarkable bird species, learn where they live, and discover why protecting their habitats matters. Your journey around the bird world starts here.</p>
+          <form class="search-box" id="heroSearch" role="search">
+            <input id="searchInput" type="search" placeholder="Search a bird or scientific name..." aria-label="Search birds">
+            <button class="primary-btn" type="submit">Search birds →</button>
+          </form>
+          <div class="hero-note">Start with a name like “Macaw”, “Eagle”, or “Robin”.</div>
+        </div>
+        <div class="hero-art" aria-label="Decorative bird illustration">
+          <div class="hero-orb"><div class="hero-bird" aria-hidden="true">🦜</div></div>
+          <div class="floating-card"><strong>Every species has a story.</strong><span>Explore nature, one bird at a time.</span></div>
+          <div class="floating-tag">🌿 Built for curious minds</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="container stats-grid">
+        <div class="stat"><strong id="speciesCount">8</strong><span>Sample bird profiles</span></div>
+        <div class="stat"><strong>7</strong><span>Continents to explore</span></div>
+        <div class="stat"><strong>1</strong><span>Shared planet to protect</span></div>
+      </div>
+    </div>
+
+    <section id="explore">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">The bird library</div>
+            <h2>Meet the birds</h2>
+            <p class="section-desc">Browse a small starter collection. Search by name or filter by the kind of bird you want to discover.</p>
+          </div>
+          <a class="text-link" href="#rare">Explore rare birds ↗</a>
+        </div>
+        <div class="filters" aria-label="Filter bird cards">
+          <button class="filter-btn active" type="button" data-filter="All">All birds</button>
+          <button class="filter-btn" type="button" data-filter="Raptor">Birds of prey</button>
+          <button class="filter-btn" type="button" data-filter="Waterbird">Waterbirds</button>
+          <button class="filter-btn" type="button" data-filter="Parrot">Parrots</button>
+          <button class="filter-btn" type="button" data-filter="Songbird">Songbirds</button>
+          <button class="filter-btn" type="button" data-filter="Threatened">Threatened</button>
+        </div> 
+        <section class="favorites-section">
+  <h2>❤️ My Favorite Birds</h2>
+  <p>Birds you've saved to your collection.</p>
+  <div class="bird-grid" id="favoritesGrid"></div>
+  <p id="favoritesEmpty">You haven't saved any birds yet.</p>
+</section>
+        <div class="bird-grid" id="birdGrid" aria-live="polite"></div>
+        <div class="empty-state" id="emptyState">No birds match that search. Try another name or choose “All birds”.</div>
+        <div class="notice"><strong>Demo data:</strong> This first version contains sample profiles, not a complete global checklist. Conservation labels and descriptions should be verified against current authoritative sources before publication.</div>
+      </div>
+    </section>
+
+    <section class="rare-band" id="rare">
+      <div class="container rare-layout">
+        <div class="rare-illustration"><span aria-hidden="true">🦅</span></div>
+        <div>
+          <div class="section-kicker">Conservation spotlight</div>
+          <h2>Some birds need our attention more than ever.</h2>
+          <p class="section-desc">Learn about vulnerable species and the challenges they face, from habitat loss to illegal wildlife trade. Conservation status can change, so always check the latest assessment.</p>
+          <div class="rare-list">
+            <div class="rare-item"><div class="rare-icon">🦅</div><div><strong>Philippine Eagle</strong><small>Forest habitat • Philippines</small></div></div>
+            <div class="rare-item"><div class="rare-icon">🐦</div><div><strong>Kākāpō</strong><small>Flightless parrot • New Zealand</small></div></div>
+            <div class="rare-item"><div class="rare-icon">🪶</div><div><strong>Whooping Crane</strong><small>Wetlands • North America</small></div></div>
+          </div>
+          <p class="source-note">These are conservation examples, not a live or exhaustive threatened-species list. Confirm current categories with the IUCN Red List and other trusted conservation sources.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Our mission</div>
+            <h2>Knowledge that helps protect nature.</h2>
+            <p class="section-desc">AVIAN WORLD is being built as a clear, accessible reference for bird lovers, students, and wildlife enthusiasts around the globe.</p>
+          </div>
+        </div>
+        <div class="about-grid">
+          <article class="about-card"><div class="about-icon">🔎</div><h3>Explore with curiosity</h3><p>Find birds by common name, scientific name, group, habitat, and geographic range as the database grows.</p></article>
+          <article class="about-card"><div class="about-icon">🌱</div><h3>Learn with care</h3><p>Use reliable references, respect image and audio licences, and keep conservation information linked to its source and update date.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <a class="brand" href="#home"><span class="brand-mark">✦</span><span>AVIAN WORLD<small>GLOBAL BIRD ENCYCLOPEDIA</small></span></a>
+          <p>A growing independent project celebrating the diversity of birds and the habitats they depend on.</p>
+        </div>
+        <div class="footer-links"><a href="#explore">Bird library</a><a href="#rare">Rare birds</a><a href="#about">Our mission</a></div>
+      </div>
+      <div class="copyright"><span>© <span id="year"></span> AVIAN WORLD. Starter project.</span><span>Species data and media must be sourced and credited appropriately.</span></div>
+    </div>
+  </footer>
+
+  <div class="modal" id="birdModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Close bird details">×</button>
+      <img id="modalImage" class="modal-image" src="" alt="Bird photo">
+      <h2 id="modalTitle">Bird name</h2>
+      <div class="scientific" id="modalScientific"></div>
+      <p id="modalDescription"></p>
+      <div class="detail-grid" id="modalDetails"></div>
+      <p class="source-note" id="modalSource"></p>
+    </div>
+  </div>
+
+  <script>
+    // Starter dataset. Keep species records in this format when adding more birds.
+    // For a large catalogue, move these records into birds.json or a database.
+    let favorites = JSON.parse(localStorage.getItem("avianFavorites") || "[]");
+    let birds = [];
+
+fetch("birds.json")
+  .then(response => response.json())
+  .then(data => {
+    birds = data;
+    renderBirds();
+  })
+  .catch(error => console.error("Could not load birds:", error));
+    
+
+    const birdGrid = document.getElementById("birdGrid");
+    const favoritesEmpty = document.getElementById("favoritesEmpty");
+    const searchInput = document.getElementById("searchInput");
+    const emptyState = document.getElementById("emptyState");
+    let activeFilter = "All";
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[ch]);
+    }
+
+    function statusClass(status) {
+      return /critically endangered|endangered|vulnerable/i.test(status) ? "status critical" : "status";
+    }
+
+    function renderBirds() {
+      const term = searchInput.value.trim().toLowerCase();
+      const filtered = birds.filter(bird => {
+        const matchesTerm = [bird.name, bird.scientific, bird.group, bird.habitat, bird.range, bird.status]
+          .join(" ").toLowerCase().includes(term);
+        const matchesFilter = activeFilter === "All"
+          || (activeFilter === "Threatened" && /critically endangered|endangered|vulnerable/i.test(bird.status))
+          || bird.group === activeFilter;
+        return matchesTerm && matchesFilter;
+      });
+
+      birdGrid.innerHTML = filtered.map(bird => `
+        <article class="bird-card" data-bird="${escapeHTML(bird.id)}" role="button" tabindex="0">
+          <div class="bird-visual">
+            <span class="${statusClass(bird.status)}">${escapeHTML(bird.status)}</span>
+            <img class="bird-photo" src="${bird.image}" alt="${escapeHTML(bird.name)}">
+          </div>
+          <div class="bird-info">
+            <h3>${escapeHTML(bird.name)}</h3>
+            <div class="scientific">${escapeHTML(bird.scientific)}</div>
+            <p>${escapeHTML(bird.description)}</p>
+            <div class="bird-meta"><span>${escapeHTML(bird.group)}</span><span>${escapeHTML(bird.range)}</span></div>
+           <button class="favorite-btn" data-favorite="${escapeHTML(bird.id)}" type="button">
+  ${favorites.includes(bird.id) ? "♥ Remove from favorites" : "♡ Add to favorites"}
+</button>
+            <button class="text-link" style="border:0;background:none;padding:14px 0 0" data-bird="${escapeHTML(bird.id)}" type="button">View bird profile ↗</button>
+          </div>
+        </article>`).join("");
+
+      emptyState.style.display = filtered.length ? "none" : "block";
+      document.getElementById("speciesCount").textContent = birds.length;
+      const favoriteBirds = birds.filter(bird => favorites.includes(bird.id));
+
+favoritesGrid.innerHTML = favoriteBirds.map(bird => `
+  <article class="bird-card" data-bird="${escapeHTML(bird.id)}" role="button" tabindex="0">
+    <div class="bird-visual">
+      <img class="bird-photo" src="${bird.image}" alt="${escapeHTML(bird.name)}">
+    </div>
+    <div class="bird-info">
+      <h3>${escapeHTML(bird.name)}</h3>
+      <div class="scientific">${escapeHTML(bird.scientific)}</div>
+      <button class="favorite-btn" data-favorite="${escapeHTML(bird.id)}" type="button">
+        ♥ Remove from favorites
+      </button>
+    </div>
+  </article>
+`).join("");
+
+favoritesEmpty.style.display = favoriteBirds.length ? "none" : "block";
+    }
+
+    function openBird(id) {
+      const bird = birds.find(item => item.id === id);
+      if (!bird) return;
+      document.getElementById("modalTitle").textContent = bird.name;
+      document.getElementById("modalImage").src = bird.image;
+      document.getElementById("modalScientific").textContent = bird.scientific;
+      document.getElementById("modalDescription").textContent = bird.description;
+      document.getElementById("modalDetails").innerHTML = [
+        ["Group", bird.group], ["Conservation status", bird.status],
+        ["Habitat", bird.habitat], ["Geographic range", bird.range],
+       ["Typical diet", bird.diet],
+["Lifespan", bird.lifespan || "Not available"],
+["Length", bird.length || "Not available"],
+["Weight", bird.weight || "Not available"]
+      ].map(([label, value]) => `<div class="detail"><small>${escapeHTML(label)}</small><strong>${escapeHTML(value)}</strong></div>`).join("");
+      document.getElementById("modalSource").textContent = "Source note: " + bird.source;
+      document.getElementById("birdModal").classList.add("open");
+      document.getElementById("modalClose").focus();
+    }
+
+    document.getElementById("heroSearch").addEventListener("submit", event => {
+      event.preventDefault();
+      activeFilter = "All";
+      document.querySelectorAll(".filter-btn").forEach(button => button.classList.toggle("active", button.dataset.filter === "All"));
+      renderBirds();
+      document.getElementById("explore").scrollIntoView({ behavior: "smooth" });
+    });
+    searchInput.addEventListener("input", renderBirds);
+    document.querySelectorAll(".filter-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        document.querySelectorAll(".filter-btn").forEach(item => item.classList.toggle("active", item === button));
+        renderBirds();
+      });
+    });
+    birdGrid.addEventListener("click", event => {
+  const favoriteButton = event.target.closest("[data-favorite]");
+
+  if (favoriteButton) {
+    const id = favoriteButton.dataset.favorite;
+
+    if (favorites.includes(id)) {
+      favorites = favorites.filter(fav => fav !== id);
+    } else {
+      favorites.push(id);
+    }
+
+    localStorage.setItem("avianFavorites", JSON.stringify(favorites));
+    renderBirds();
+    return;
+  }
+
+  const button = event.target.closest("[data-bird]");
+  if (button) openBird(button.dataset.bird);
+});
+favoritesGrid.addEventListener("click", event => {
+  const favoriteButton = event.target.closest("[data-favorite]");
+  if (favoriteButton) {
+    const id = favoriteButton.dataset.favorite;
+    favorites = favorites.filter(fav => fav !== id);
+    localStorage.setItem("avianFavorites", JSON.stringify(favorites));
+    renderBirds();
+    return;
+  }
+
+  const birdCard = event.target.closest("[data-bird]");
+  if (birdCard) openBird(birdCard.dataset.bird);
+});
+    document.getElementById("modalClose").addEventListener("click", () => document.getElementById("birdModal").classList.remove("open"));
+    document.getElementById("birdModal").addEventListener("click", event => {
+      if (event.target.id === "birdModal") event.currentTarget.classList.remove("open");
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") document.getElementById("birdModal").classList.remove("open");
+    });
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderBirds();
+  </script>
+</body>
+</html>
